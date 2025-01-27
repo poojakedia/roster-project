@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  server:
+    build:
+      dockerfile: ./rosterAPI/Dockerfile
+    container_name: backend
+    ports:
+      - "5000:5000"
+    env_file: ./.env
+    depends_on: 
+      - mongodb
+  
+
+  client:
+    build:
+      dockerfile: ./roster-proj/Dockerfile
+
+    container_name: frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+  
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_server
+
+    env_file: ./.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+
+    ports: 
+      - "27017:27017"
+      
